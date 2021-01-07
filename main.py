@@ -12,7 +12,7 @@ import util
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
-log.setLevel(level=logging.DEBUG)
+log.setLevel(level=logging.INFO)
 
 HOT_SEARCH = "https://s.weibo.com/top/summary?cate=realtimehot"
 HOT_TOPIC = "https://s.weibo.com/top/summary?cate=topicband"
@@ -132,20 +132,20 @@ def generateTodayReadme(searches, topics):
         readme = f.read()
 
     now = util.currentTimeStr()
+    readme = readme.replace("{updateTime}", now)
     readme = readme.replace("{searches}", searchList)
     readme = readme.replace("{topics}", topicList)
-    readme = readme.replace("{updateTime}", now)
 
     return readme
 
 
 def handleTodayMd(md):
-    log.info('today md:%s', md)
+    log.debug('today md:%s', md)
     util.writeText('README.md', md)
 
 
 def handleArchiveMd(md):
-    log.info('archive md:%s', md)
+    log.debug('archive md:%s', md)
     name = '{}.md'.format(util.currentDateStr())
     file = os.path.join('archives', name)
     util.writeText(file, md)
