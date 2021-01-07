@@ -5,7 +5,7 @@ import re
 import traceback
 
 import requests
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from requests.exceptions import RequestException
 from urllib3.util.retry import Retry
@@ -34,8 +34,8 @@ def getContent(url: str):
             s.mount("http://", HTTPAdapter(max_retries=retries))
             s.mount("https://", HTTPAdapter(max_retries=retries))
             return s.get(url, headers=headers).text
-    except RequestException as e:
-        log.warning("request failed:%r", e)
+    except:
+        log.error(traceback.format_exc())
 
 
 def parseSearchList(page: str):
@@ -72,10 +72,10 @@ def parseTopicList(page: str):
                     title = a.select_one('article > h2').text
                     detail = a.select_one('article > p').text
                     if not detail:
-                        detail = '暂无相关信息'
+                        detail = '暂无数据'
                     info = a.select_one('article > span').text
                     if not info:
-                        info = '暂无相关信息'
+                        info = '暂无数据'
                     result.append({'title': title, 'url': url,
                                    'detail': detail, 'info': info})
     except:
