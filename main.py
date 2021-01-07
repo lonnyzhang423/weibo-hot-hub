@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import re
@@ -7,7 +6,6 @@ import traceback
 import requests
 from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
-from requests.exceptions import RequestException
 from urllib3.util.retry import Retry
 
 import util
