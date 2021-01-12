@@ -1,8 +1,8 @@
-# {date}
+# 微博热榜
 
 `最后更新时间：{updateTime}`
 
-## 热搜
+## 热门搜索
 
 {searches}
 

@@ -3,85 +3,12 @@ import os
 import re
 import traceback
 
-import requests
-from bs4 import BeautifulSoup
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-
 import util
-
-logging.basicConfig()
-log = logging.getLogger(__name__)
-log.setLevel(level=logging.INFO)
-
-HOT_SEARCH = "https://s.weibo.com/top/summary?cate=realtimehot"
-HOT_TOPIC = "https://s.weibo.com/top/summary?cate=topicband"
-
-retries = Retry(total=2,
-                backoff_factor=0.1,
-                status_forcelist=[k for k in range(400, 600)])
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-}
+from util import logger
+from weibo import Weibo
 
 
-def getContent(url: str):
-    try:
-        with requests.session() as s:
-            s.mount("http://", HTTPAdapter(max_retries=retries))
-            s.mount("https://", HTTPAdapter(max_retries=retries))
-            return s.get(url, headers=headers).text
-    except:
-        log.error(traceback.format_exc())
-
-
-def parseSearchList(page: str):
-    result = []
-    try:
-        soup = BeautifulSoup(page)
-        ul = soup.select('section.list > ul.list_a > li')
-        if ul:
-            for li in ul:
-                a = li.find('a')
-                if a:
-                    url = 'https://s.weibo.com{}'.format(a['href'])
-                    # 去除热度
-                    em = a.select_one('span > em')
-                    if em:
-                        em.replaceWith('')
-                    title = a.find('span').text.strip()
-                    result.append({'title': title, 'url': url})
-    except:
-        log.error(traceback.format_exc())
-    return result
-
-
-def parseTopicList(page: str):
-    result = []
-    try:
-        soup = BeautifulSoup(page)
-        ul = soup.select('section.list > ul.list_b > li')
-        if ul:
-            for li in ul:
-                a = li.find('a')
-                if a:
-                    url = 'https://s.weibo.com{}'.format(a['href'])
-                    title = a.select_one('article > h2').text
-                    detail = a.select_one('article > p').text
-                    if not detail:
-                        detail = '暂无数据'
-                    info = a.select_one('article > span').text
-                    if not info:
-                        info = '暂无数据'
-                    result.append({'title': title, 'url': url,
-                                   'detail': detail, 'info': info})
-    except:
-        log.error(traceback.format_exc())
-    return result
-
-
-def generateArchiveReadme(searches, topics):
+def generateArchiveMd(searches, topics):
     """生成归档readme
     """
     def search(item):
@@ -90,27 +17,27 @@ def generateArchiveReadme(searches, topics):
     def topic(item):
         return '1. [{}]({})\n    - {}\n    - {}'.format(item['title'], item['url'], item['detail'], item['info'])
 
-    searchList = '暂无数据'
+    searchMd = '暂无数据'
     if searches:
-        searchList = '\n'.join([search(item) for item in searches])
+        searchMd = '\n'.join([search(item) for item in searches])
 
-    topicList = '暂无数据'
+    topicMd = '暂无数据'
     if topics:
-        topicList = '\n'.join([topic(item) for item in topics])
+        topicMd = '\n'.join([topic(item) for item in topics])
 
     readme = ''
-    with open('README_archive.template', 'r') as f:
+    file = os.path.join('template','archive.md')
+    with open(file) as f:
         readme = f.read()
 
-    readme = readme.replace("{date}", util.currentDateStr())
-    readme = readme.replace("{updateTime}", util.currentTimeStr())
-    readme = readme.replace("{searches}", searchList)
-    readme = readme.replace("{topics}", topicList)
+    readme = readme.replace("{updateTime}", util.current_time())
+    readme = readme.replace("{searches}", searchMd)
+    readme = readme.replace("{topics}", topicMd)
 
     return readme
 
 
-def generateTodayReadme(searches, topics):
+def generateReadme(searches, topics):
     """生成今日readme
     """
     def search(item):
@@ -119,65 +46,61 @@ def generateTodayReadme(searches, topics):
     def topic(item):
         return '1. [{}]({})\n    - {}\n    - {}'.format(item['title'], item['url'], item['detail'], item['info'])
 
-    searchList = '暂无数据'
+    searchMd = '暂无数据'
     if searches:
-        searchList = '\n'.join([search(item) for item in searches])
+        searchMd = '\n'.join([search(item) for item in searches])
 
-    topicList = '暂无数据'
+    topicMd = '暂无数据'
     if topics:
-        topicList = '\n'.join([topic(item) for item in topics])
+        topicMd = '\n'.join([topic(item) for item in topics])
 
     readme = ''
-    with open('README.template', 'r') as f:
+    file = os.path.join('template','README.md')
+    with open(file) as f:
         readme = f.read()
 
-    now = util.currentTimeStr()
-    readme = readme.replace("{updateTime}", now)
-    readme = readme.replace("{searches}", searchList)
-    readme = readme.replace("{topics}", topicList)
+    readme = readme.replace("{updateTime}", util.current_time())
+    readme = readme.replace("{searches}", searchMd)
+    readme = readme.replace("{topics}", topicMd)
 
     return readme
 
 
-def handleTodayMd(md):
-    log.debug('today md:%s', md)
-    util.writeText('README.md', md)
+def handleReadme(md):
+    logger.debug('today md:%s', md)
+    util.write_text('README.md', md)
 
 
 def handleArchiveMd(md):
-    log.debug('archive md:%s', md)
-    name = '{}.md'.format(util.currentDateStr())
+    logger.debug('archive md:%s', md)
+    name = '{}.md'.format(util.current_date())
     file = os.path.join('archives', name)
-    util.writeText(file, md)
+    util.write_text(file, md)
 
 
 def saveRawContent(content: str, filePrefix: str):
-    if not content:
-        log.warning('content is empty or none')
-        return
-
-    name = '{}-{}.html'.format(filePrefix, util.currentDateStr())
-    file = os.path.join('raw', name)
-    util.writeText(file, content)
+    filename = '{}-{}.html'.format(filePrefix, util.current_date())
+    file = os.path.join('raw', filename)
+    util.write_text(file, content)
 
 
 def run():
+    weibo = Weibo()
     # 热搜
-    searchContent = getContent(HOT_SEARCH)
-    searchList = parseSearchList(searchContent)
+    searches, resp = weibo.get_hot_search()
+    if resp:
+        saveRawContent(resp.text,'hot-search')
     # 话题榜
-    topicContent = getContent(HOT_TOPIC)
-    topicList = parseTopicList(topicContent)
+    topics, resp = weibo.get_hot_topic()
+    if resp:
+        saveRawContent(resp.text,'hot-topic')
 
     # 最新数据
-    todayMd = generateTodayReadme(searchList, topicList)
-    handleTodayMd(todayMd)
+    readme = generateReadme(searches, topics)
+    handleReadme(readme)
     # 归档
-    archiveMd = generateArchiveReadme(searchList, topicList)
+    archiveMd = generateArchiveMd(searches, topics)
     handleArchiveMd(archiveMd)
-    # 原始数据
-    saveRawContent(searchContent, 'hot-search')
-    saveRawContent(topicContent, 'hot-topic')
 
 
 if __name__ == "__main__":
