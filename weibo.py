@@ -1,6 +1,4 @@
 import contextlib
-import json
-import traceback
 
 import requests
 from bs4 import BeautifulSoup
@@ -20,6 +18,7 @@ RETRIES = Retry(total=3,
                 backoff_factor=1,
                 status_forcelist=[k for k in range(400, 600)])
 
+
 @contextlib.contextmanager
 def request_session():
     s = requests.session()
@@ -30,6 +29,7 @@ def request_session():
         yield s
     finally:
         s.close()
+
 
 class Weibo:
 
@@ -56,9 +56,8 @@ class Weibo:
                             title = a.find('span').text.strip()
                             items.append({'title': title, 'url': url})
         except:
-            logger.warning(traceback.format_exc())
-        return (items,resp)
-
+            logger.exception('get hot search failed')
+        return (items, resp)
 
     def get_hot_topic(self):
         """热门话题
@@ -82,15 +81,15 @@ class Weibo:
                                 detail = '暂无数据'
                             info = a.select_one('article > span').text
                             if not info:
-                                info = '暂无数据' 
+                                info = '暂无数据'
                             items.append({'title': title, 'url': url,
-                                        'detail': detail, 'info': info})
+                                          'detail': detail, 'info': info})
         except:
-            logger.warning(traceback.format_exc())
-        return (items,resp)
+            logger.exception('get hot topic failed')
+        return (items, resp)
 
 
 if __name__ == "__main__":
     weibo = Weibo()
-    searches,resp = weibo.get_hot_search()
-    logger.info('%s',searches[0])
+    searches, resp = weibo.get_hot_search()
+    logger.info('%s', searches[0])

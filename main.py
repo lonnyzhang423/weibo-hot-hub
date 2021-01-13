@@ -1,7 +1,4 @@
-import logging
 import os
-import re
-import traceback
 
 import util
 from util import logger
@@ -26,7 +23,7 @@ def generateArchiveMd(searches, topics):
         topicMd = '\n'.join([topic(item) for item in topics])
 
     readme = ''
-    file = os.path.join('template','archive.md')
+    file = os.path.join('template', 'archive.md')
     with open(file) as f:
         readme = f.read()
 
@@ -55,7 +52,7 @@ def generateReadme(searches, topics):
         topicMd = '\n'.join([topic(item) for item in topics])
 
     readme = ''
-    file = os.path.join('template','README.md')
+    file = os.path.join('template', 'README.md')
     with open(file) as f:
         readme = f.read()
 
@@ -89,11 +86,11 @@ def run():
     # 热搜
     searches, resp = weibo.get_hot_search()
     if resp:
-        saveRawContent(resp.text,'hot-search')
+        saveRawContent(resp.text, 'hot-search')
     # 话题榜
     topics, resp = weibo.get_hot_topic()
     if resp:
-        saveRawContent(resp.text,'hot-topic')
+        saveRawContent(resp.text, 'hot-topic')
 
     # 最新数据
     readme = generateReadme(searches, topics)
