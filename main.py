@@ -5,7 +5,7 @@ from util import logger
 from weibo import Weibo
 
 
-def generateArchiveMd(searches, topics):
+def generate_archive_md(searches, topics):
     """生成归档readme
     """
     def search(item):
@@ -34,7 +34,7 @@ def generateArchiveMd(searches, topics):
     return readme
 
 
-def generateReadme(searches, topics):
+def generate_readme(searches, topics):
     """生成今日readme
     """
     def search(item):
@@ -63,19 +63,19 @@ def generateReadme(searches, topics):
     return readme
 
 
-def handleReadme(md):
-    logger.debug('today md:%s', md)
+def save_readme(md):
+    logger.debug('readme:%s', md)
     util.write_text('README.md', md)
 
 
-def handleArchiveMd(md):
+def save_archive_md(md):
     logger.debug('archive md:%s', md)
     name = '{}.md'.format(util.current_date())
     file = os.path.join('archives', name)
     util.write_text(file, md)
 
 
-def saveRawContent(content: str, filePrefix: str):
+def save_raw_content(content: str, filePrefix: str):
     filename = '{}-{}.html'.format(filePrefix, util.current_date())
     file = os.path.join('raw', filename)
     util.write_text(file, content)
@@ -86,18 +86,18 @@ def run():
     # 热搜
     searches, resp = weibo.get_hot_search()
     if resp:
-        saveRawContent(resp.text, 'hot-search')
+        save_raw_content(resp.text, 'hot-search')
     # 话题榜
     topics, resp = weibo.get_hot_topic()
     if resp:
-        saveRawContent(resp.text, 'hot-topic')
+        save_raw_content(resp.text, 'hot-topic')
 
     # 最新数据
-    readme = generateReadme(searches, topics)
-    handleReadme(readme)
+    readme = generate_readme(searches, topics)
+    save_readme(readme)
     # 归档
-    archiveMd = generateArchiveMd(searches, topics)
-    handleArchiveMd(archiveMd)
+    archiveMd = generate_archive_md(searches, topics)
+    save_archive_md(archiveMd)
 
 
 if __name__ == "__main__":

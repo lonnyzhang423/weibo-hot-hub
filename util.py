@@ -2,9 +2,10 @@ import logging
 import os
 from datetime import datetime
 
-logging.basicConfig(format='%(asctime)s %(levelname)s - %(message)s')
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-logger.setLevel(level=logging.INFO)
+logger.setLevel(level=logging.DEBUG)
 
 
 def strip_embracing_quotes(text: str):
@@ -31,3 +32,7 @@ def write_text(file: str, text: str):
     ensure_dir(file)
     with open(file, 'w') as f:
         f.write(text)
+
+
+if __name__ == "__main__":
+    logger.info('hello world')
