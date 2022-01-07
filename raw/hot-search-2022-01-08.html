@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=gb2312"/>
+    <title>Sina Visitor System</title>
+</head>
+<body>
+<span id="message"></span>
+<script type="text/javascript" src="/js/visitor/mini_original.js?v=20161116"></script>
+<script type="text/javascript">
+    window.use_fp = "1" == "1"; // ÊÇ·ñ²É¼¯Éè±¸Ö¸ÎÆ¡£
+    var url = url || {};
+    (function () {
+        this.l = function (u, c) {
+            try {
+                var s = document.createElement("script");
+                s.type = "text/javascript";
+                s[document.all ? "onreadystatechange" : "onload"] = function () {
+
+                    if (document.all && this.readyState != "loaded" && this.readyState != "complete") {
+                        return
+                    }
+                    this[document.all ? "onreadystatechange" : "onload"] = null;
+                    this.parentNode.removeChild(this);
+                    if (c) {
+                        c()
+                    }
+                };
+                s.src = u;
+                document.getElementsByTagName("head")[0].appendChild(s)
+            } catch (e) {
+            }
+        };
+    }).call(url);
+
+    // Á÷³ÌÈë¿Ú¡£
+    wload(function () {
+
+        try {
+
+            var need_restore = "1" == "1"; // ÊÇ·ñ×ß»Ö¸´Éí·ÝÁ÷³Ì¡£
+
+            // Èç¹ûÐèÒª×ß»Ö¸´Éí·ÝÁ÷³Ì£¬³¢ÊÔ´Ó cookie »ñÈ¡ÓÃ»§Éí·Ý¡£
+            if (!need_restore || !Store.CookieHelper.get("SRF")) {
+
+                // Èô»ñÈ¡Ê§°Ü×ß´´½¨·Ã¿ÍÁ÷³Ì¡£
+                // Á÷³ÌÖ´ÐÐÊ±¼ä¹ý³¤£¨³¬¹ý 3s£©£¬ÔòÈÏÎª³ö´í¡£
+                var error_timeout = window.setTimeout("error_back()", 5000);
+
+                tid.get(function (tid, where, confidence) {
+                    // È¡Ö¸ÎÆË³ÀûÍê³É£¬Çå³ý³ö´í timeout ¡£
+                    window.clearTimeout(error_timeout);
+                    incarnate(tid, where, confidence);
+                });
+            } else {
+                // ÓÃ»§Éí·Ý´æÔÚ£¬³¢ÊÔ»Ö¸´ÓÃ»§Éí·Ý¡£
+                restore();
+            }
+        } catch (e) {
+            // ³ö´í¡£
+            error_back();
+        }
+    });
+
+    // ¡°·µ»Ø¡± »Øµ÷º¯Êý¡£
+    var return_back = function (response) {
+
+        if (response["retcode"] == 20000000) {
+            back();
+        } else {
+            // ³ö´í¡£
+            error_back(response["msg"]);
+        }
+    };
+
+    // Ìø×ª»Ø³õÊ¼µØÖ·¡£
+    var back = function() {
+
+        var url = "https://s.weibo.com/top/summary?cate=realtimehot";
+        if (url != "none") {
+            window.location.href = url;
+        }
+    };
+
+    // ¿çÓò¹ã²¥¡£
+    var cross_domain = function (response) {
+
+        var from = "weibo";
+        var entry = "miniblog";
+        if (response["retcode"] == 20000000) {
+
+            var crossdomain_host = "login.sina.com.cn";
+            if (crossdomain_host != "none") {
+
+                var cross_domain_intr = window.location.protocol + "//" + crossdomain_host + "/visitor/visitor?a=crossdomain&cb=return_back&s=" +
+                        encodeURIComponent(response["data"]["sub"]) + "&sp=" + encodeURIComponent(response["data"]["subp"]) + "&from=" + from + "&_rand=" + Math.random() + "&entry=" + entry;
+                url.l(cross_domain_intr);
+            } else {
+
+                back();
+            }
+        } else {
+
+            // ³ö´í¡£
+            error_back(response["msg"]);
+        }
+    };
+
+    // ÎªÓÃ»§¸³Óè·Ã¿ÍÉí·Ý ¡£
+    var incarnate = function (tid, where, conficence) {
+
+        var gen_conf = "";
+        var from = "weibo";
+        var incarnate_intr = window.location.protocol + "//" + window.location.host + "/visitor/visitor?a=incarnate&t=" +
+                encodeURIComponent(tid) + "&w=" + encodeURIComponent(where) + "&c=" + encodeURIComponent(conficence) +
+                "&gc=" + encodeURIComponent(gen_conf) + "&cb=cross_domain&from=" + from + "&_rand=" + Math.random();
+        url.l(incarnate_intr);
+    };
+
+    // »Ö¸´ÓÃ»§¶ªÊ§µÄÉí·Ý¡£
+    var restore = function () {
+
+        var from = "weibo";
+        var restore_intr = window.location.protocol + "//" + window.location.host +
+                "/visitor/visitor?a=restore&cb=restore_back&from=" + from + "&_rand=" + Math.random();
+
+        url.l(restore_intr);
+    };
+
+    // ¿çÓò»Ö¸´¶ªÊ§µÄÉí·Ý¡£
+    var restore_back = function (response) {
+
+        // Éí·Ý»Ö¸´³É¹¦×ß¹ã²¥Á÷³Ì£¬·ñÔò×ß´´½¨·Ã¿ÍÁ÷³Ì¡£
+        if (response["retcode"] == 20000000) {
+
+            var url = "https://s.weibo.com/top/summary?cate=realtimehot";
+            var alt = response["data"]["alt"];
+            var savestate = response["data"]["savestate"];
+            if (alt != "") {
+                requrl = (url == "none") ? "" : "&url=" + encodeURIComponent(url);
+                var params = "entry=sso&alt=" + encodeURIComponent(alt) + "&returntype=META" +
+                    "&gateway=1&savestate=" + encodeURIComponent(savestate) + requrl;
+                window.location.href = "https://login.sina.com.cn/sso/login.php?" + params;
+            } else {
+
+                cross_domain(response);
+            }
+        } else if(response['retcode'] == 50111261 && isInIframe()) {
+            //do nothing
+        } else {
+
+            tid.get(function (tid, where, confidence) {
+                incarnate(tid, where, confidence);
+            });
+        }
+    };
+
+    // ³ö´íÇé¿ö·µ»ØµÇÂ¼Ò³¡£
+    var error_back = function (msg) {
+
+        var url = "https://s.weibo.com/top/summary?cate=realtimehot";
+        var clientType = "mobile";
+        if (url != "none") {
+
+            if (url.indexOf("ssovie4c55=0") === -1) {
+                url += (((url.indexOf("?") === -1) ? "?" : "&") + "ssovie4c55=0");
+            }
+            if (clientType == "mobile") {
+            	window.location.href = "https://passport.weibo.cn/signin/login?r="+url;
+            } else{
+            	window.location.href = "https://weibo.com/login.php";
+            }
+        } else {
+
+            if(document.getElementById("message")) {
+                document.getElementById("message").innerHTML = "Error occurred" + (msg ? (": " + msg) : ".");
+            }
+        }
+    };
+
+    var isInIframe = function () {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    };
+
+</script>
+</body>
+</html>
