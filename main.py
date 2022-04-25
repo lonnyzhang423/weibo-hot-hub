@@ -2,17 +2,21 @@ import os
 
 import util
 from util import logger
-from weibo import Weibo
+from weibo2 import Weibo
 
 
 def generate_archive_md(searches, topics):
     """生成归档readme
     """
     def search(item):
-        return '1. [{}]({})'.format(item['title'], item['url'])
+        return '1. [{}]({})'.format(item['desc'], item['scheme'])
 
     def topic(item):
-        return '1. [{}]({})\n    - {}\n    - {}'.format(item['title'], item['url'], item['detail'], item['info'])
+        detail = ''
+        if 'card_expand' in item:
+            if 'content' in item['card_expand']:
+                detail = item['card_expand']['content']
+        return '1. [{}]({})\n    - {}\n'.format(item['title_sub'], item['scheme'], detail)
 
     searchMd = '暂无数据'
     if searches:
@@ -38,10 +42,14 @@ def generate_readme(searches, topics):
     """生成今日readme
     """
     def search(item):
-        return '1. [{}]({})'.format(item['title'], item['url'])
+        return '1. [{}]({})'.format(item['desc'], item['scheme'])
 
     def topic(item):
-        return '1. [{}]({})\n    - {}\n    - {}'.format(item['title'], item['url'], item['detail'], item['info'])
+        detail = ''
+        if 'card_expand' in item:
+            if 'content' in item['card_expand']:
+                detail = item['card_expand']['content']
+        return '1. [{}]({})\n    - {}\n'.format(item['title_sub'], item['scheme'], detail)
 
     searchMd = '暂无数据'
     if searches:
@@ -76,7 +84,7 @@ def save_archive_md(md):
 
 
 def save_raw_content(content: str, filePrefix: str):
-    filename = '{}-{}.html'.format(filePrefix, util.current_date())
+    filename = '{}-{}.json'.format(filePrefix, util.current_date())
     file = os.path.join('raw', filename)
     util.write_text(file, content)
 
