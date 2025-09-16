@@ -62,7 +62,7 @@
     var visitor_gray = function () {
         var from = "weibo";
         var return_url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
-        var request_id = "256b2dc6096d139932e88c9c98dc6d39";
+        var request_id = "f53584d4031a38e6e65d32c4662c681f";
         var webdriver = navigator.webdriver;
 
         // ÏÈÉú³É rid£¬ÔÙ·¢ËÍÇëÇó
@@ -71,7 +71,7 @@
                 if (!v) {
                     v = "";
                 }
-                ufp.util.postData('https://' + window.location.host + '/visitor/genvisitor2', 'cb=visitor_gray_callback&ver=20250819&request_id='+request_id+'&tid=' + v + '&from=' + from + '&webdriver=' + webdriver + '&rid=' + rid + '&return_url=' + return_url, function (res) {
+                ufp.util.postData('https://' + window.location.host + '/visitor/genvisitor2', 'cb=visitor_gray_callback&ver=20250916&request_id='+request_id+'&tid=' + v + '&from=' + from + '&webdriver=' + webdriver + '&rid=' + rid + '&return_url=' + return_url, function (res) {
                     if (res) {
                         eval(res);
                     }
