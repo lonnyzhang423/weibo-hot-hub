@@ -62,7 +62,7 @@
     var visitor_gray = function () {
         var from = "weibo";
         var return_url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
-        var request_id = "1c32e3f853118ee3fccb5ae067f3616e";
+        var request_id = "2abf65eea8d159a027e2052bb95c098e";
         var webdriver = navigator.webdriver;
 
         // ÏÈÉú³É rid£¬ÔÙ·¢ËÍÇëÇó
@@ -126,7 +126,7 @@
 
         var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
         if (url != "none") {
-            window.location.href = url;
+            window.location.replace(url);
         }
     };
 
@@ -166,7 +166,7 @@
 
                 var cross_domain_intr = window.location.protocol + "//" + crossdomain_host + "/visitor/visitor?a=crossdomain&s=" +
                     encodeURIComponent(response["data"]["sub"]) + "&sp=" + encodeURIComponent(response["data"]["subp"]) + "&from=" + from + "&_rand=" + Math.random() + "&entry=" + entry+"&url=" + encodeURIComponent("https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1");
-                window.location.href = cross_domain_intr;
+                window.location.replace(cross_domain_intr);
             } else {
                 back();
             }
@@ -209,7 +209,7 @@
             if (alt != "") {
                 requrl = (url == "none") ? "" : "&url=" + encodeURIComponent(url);
                 var params = "entry=sso&source=visitor_restore&type=3&alt=" + encodeURIComponent(alt) + requrl;
-                window.location.href = "https://passport.weibo.com/sso/v2/login?" + params;
+                window.location.replace("https://passport.weibo.com/sso/v2/login?" + params);
             } else {
 
                 cross_domain(response);
@@ -235,9 +235,9 @@
                 url += (((url.indexOf("?") === -1) ? "?" : "&") + "ssovie4c55=0");
             }
             if (clientType == "mobile") {
-                window.location.href = "https://passport.weibo.cn/signin/login?r=" + url;
+                window.location.replace("https://passport.weibo.cn/signin/login?r=" + url);
             } else {
-                window.location.href = "https://weibo.com/login.php";
+                window.location.replace("https://weibo.com/login.php");
             }
         } else {
 
@@ -257,7 +257,7 @@
                 var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
                 requrl = (url === "none") ? "" : "&url=" + encodeURIComponent(url);
                 var params = "entry=sso&source=visitor_restore&type=3&alt=" + encodeURIComponent(alt) + requrl;
-                window.location.href = "https://passport.weibo.com/sso/v2/login?" + params;
+                window.location.replace("https://passport.weibo.com/sso/v2/login?" + params);
             } else {
                 cross_domain2(response)
             }
