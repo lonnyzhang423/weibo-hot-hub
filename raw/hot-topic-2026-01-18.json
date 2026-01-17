@@ -62,7 +62,7 @@
     var visitor_gray = function () {
         var from = "weibo";
         var return_url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
-        var request_id = "301f61bb4d4f037dc6aca0e8461c39ff";
+        var request_id = "dfb4cb85e17e828a451e3ab9bb0f34df";
         var webdriver = navigator.webdriver;
 
         // ÏÈÉú³É rid£¬ÔÙ·¢ËÍÇëÇó
