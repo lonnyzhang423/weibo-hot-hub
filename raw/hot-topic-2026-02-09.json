@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=gb2312"/>
+    <title>Sina Visitor System</title>
+</head>
+<body>
+<span id="message"></span>
+<script type="text/javascript" src="/js/visitor/mini_original.js?v=20161116"></script>
+<script src="https://passport.sinaimg.cn/js/fp/1.2.1.umd.js"></script>
+<script type="text/javascript">
+    window.use_fp = "0" == "1"; // ÊÇ·ñ²É¼¯Éè±¸Ö¸ÎÆ¡£
+    var url = url || {};
+    (function () {
+        this.l = function (u, c) {
+            try {
+                var s = document.createElement("script");
+                s.type = "text/javascript";
+                s[document.all ? "onreadystatechange" : "onload"] = function () {
+                    if (document.all && this.readyState != "loaded" && this.readyState != "complete") {
+                        return
+                    }
+                    this[document.all ? "onreadystatechange" : "onload"] = null;
+                    this.parentNode.removeChild(this);
+                    if (c) {
+                        c()
+                    }
+                };
+                s.src = u;
+                document.getElementsByTagName("head")[0].appendChild(s)
+            } catch (e) {
+            }
+        };
+    }).call(url);
+
+    var visitor_origin = function () {
+        try {
+            var need_restore = "0" == "1"; // ÊÇ·ñ×ß»Ö¸´Éí·ÝÁ÷³Ì¡£
+
+            // Èç¹ûÐèÒª×ß»Ö¸´Éí·ÝÁ÷³Ì£¬³¢ÊÔ´Ó cookie »ñÈ¡ÓÃ»§Éí·Ý¡£
+            if (!need_restore || !Store.CookieHelper.get("SRF")) {
+
+                // Èô»ñÈ¡Ê§°Ü×ß´´½¨·Ã¿ÍÁ÷³Ì¡£
+                // Á÷³ÌÖ´ÐÐÊ±¼ä¹ý³¤£¨³¬¹ý 3s£©£¬ÔòÈÏÎª³ö´í¡£
+                var error_timeout = window.setTimeout("error_back()", 5000);
+
+                tid.get(function (tid, where, confidence) {
+                    // È¡Ö¸ÎÆË³ÀûÍê³É£¬Çå³ý³ö´í timeout ¡£
+                    window.clearTimeout(error_timeout);
+                    incarnate(tid, where, confidence);
+                });
+            } else {
+                // ÓÃ»§Éí·Ý´æÔÚ£¬³¢ÊÔ»Ö¸´ÓÃ»§Éí·Ý¡£
+                restore();
+            }
+        } catch (e) {
+            // ³ö´í¡£
+            error_back();
+        }
+    };
+
+    var visitor_gray = function () {
+        var from = "weibo";
+        var return_url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
+        var request_id = "1df51a09848b9fe1d45e73ec47ce1cec";
+        var webdriver = navigator.webdriver;
+
+        // ÏÈÉú³É rid£¬ÔÙ·¢ËÍÇëÇó
+        generateRid(function(rid) {
+            Store.DB.get("tid", function (v) {
+                if (!v) {
+                    v = "";
+                }
+                ufp.util.postData('https://' + window.location.host + '/visitor/genvisitor2', 'cb=visitor_gray_callback&ver=20250916&request_id='+request_id+'&tid=' + v + '&from=' + from + '&webdriver=' + webdriver + '&rid=' + rid + '&return_url=' + return_url, function (res) {
+                    if (res) {
+                        eval(res);
+                    }
+                });
+            });
+        });
+    }
+
+    // Éú³É rid µÄ¶ÀÁ¢·½·¨
+    var generateRid = function(callback) {
+        var rid = Date.now();
+        var detector = window.wbBotDetector;
+        if (!detector) {
+            callback(rid);
+            return;
+        }
+        try{
+            detector.load({ "from": "pc-visitor" });
+            detector.get({useCache:false}).then(function (result) {
+                if (result.rid) {
+                    rid = result.rid;
+                }else{
+                    rid = "error: empty";
+                }
+                callback(rid);
+            }).catch(function (error) {
+                callback("get-error:"+error);
+            });
+        }catch (e){
+            callback("error:" + e.message);
+        }
+    };
+
+    // Á÷³ÌÈë¿Ú¡£
+    wload(function () {
+        visitor_gray();
+    });
+
+    // ¡°·µ»Ø¡± »Øµ÷º¯Êý¡£
+    var return_back = function (response) {
+
+        if (response["retcode"] == 20000000) {
+            back();
+        } else {
+            // ³ö´í¡£
+            error_back(response["msg"]);
+        }
+    };
+
+    // Ìø×ª»Ø³õÊ¼µØÖ·¡£
+    var back = function () {
+
+        var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
+        if (url != "none") {
+            window.location.replace(url);
+        }
+    };
+
+    // ¿çÓò¹ã²¥¡£
+    var cross_domain = function (response) {
+
+        var from = "weibo";
+        var entry = "sinawap";
+        if (response["retcode"] == 20000000) {
+
+            var crossdomain_host = "none";
+            if (crossdomain_host != "none") {
+
+                var cross_domain_intr = window.location.protocol + "//" + crossdomain_host + "/visitor/visitor?a=crossdomain&cb=return_back&s=" +
+                    encodeURIComponent(response["data"]["sub"]) + "&sp=" + encodeURIComponent(response["data"]["subp"]) + "&from=" + from + "&_rand=" + Math.random() + "&entry=" + entry;
+                url.l(cross_domain_intr);
+            } else {
+
+                back();
+            }
+        } else {
+
+            // ³ö´í¡£
+            error_back(response["msg"]);
+        }
+    };
+
+    // ¿çÓò¹ã²¥¡£
+    var cross_domain2 = function (response) {
+
+        var from = "weibo";
+        var entry = "sinawap";
+        if (response["retcode"] == 20000000) {
+
+            var crossdomain_host = "none";
+            if (crossdomain_host != "none") {
+
+                var cross_domain_intr = window.location.protocol + "//" + crossdomain_host + "/visitor/visitor?a=crossdomain&s=" +
+                    encodeURIComponent(response["data"]["sub"]) + "&sp=" + encodeURIComponent(response["data"]["subp"]) + "&from=" + from + "&_rand=" + Math.random() + "&entry=" + entry+"&url=" + encodeURIComponent("https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1");
+                window.location.replace(cross_domain_intr);
+            } else {
+                back();
+            }
+        } else {
+
+            // ³ö´í¡£
+            error_back(response["msg"]);
+        }
+    };
+
+    // ÎªÓÃ»§¸³Óè·Ã¿ÍÉí·Ý ¡£
+    var incarnate = function (tid, where, conficence) {
+
+        var gen_conf = "";
+        var from = "weibo";
+        var incarnate_intr = "https://" + window.location.host + "/visitor/visitor?a=incarnate&t=" +
+            encodeURIComponent(tid) + "&w=" + encodeURIComponent(where) + "&c=" + encodeURIComponent(conficence) +
+            "&gc=" + encodeURIComponent(gen_conf) + "&cb=cross_domain&from=" + from + "&_rand=" + Math.random();
+        url.l(incarnate_intr);
+    };
+
+    // »Ö¸´ÓÃ»§¶ªÊ§µÄÉí·Ý¡£
+    var restore = function () {
+
+        var from = "weibo";
+        var restore_intr = "https://" + window.location.host +
+            "/visitor/visitor?a=restore&cb=restore_back&from=" + from + "&_rand=" + Math.random();
+
+        url.l(restore_intr);
+    };
+
+    // ¿çÓò»Ö¸´¶ªÊ§µÄÉí·Ý¡£
+    var restore_back = function (response) {
+
+        // Éí·Ý»Ö¸´³É¹¦×ß¹ã²¥Á÷³Ì£¬·ñÔò×ß´´½¨·Ã¿ÍÁ÷³Ì¡£
+        if (response["retcode"] == 20000000) {
+
+            var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
+            var alt = response["data"]["alt"];
+            if (alt != "") {
+                requrl = (url == "none") ? "" : "&url=" + encodeURIComponent(url);
+                var params = "entry=sso&source=visitor_restore&type=3&alt=" + encodeURIComponent(alt) + requrl;
+                window.location.replace("https://passport.weibo.com/sso/v2/login?" + params);
+            } else {
+
+                cross_domain(response);
+            }
+        } else if (response['retcode'] == 50111261 && isInIframe()) {
+            //do nothing
+        } else {
+
+            tid.get(function (tid, where, confidence) {
+                incarnate(tid, where, confidence);
+            });
+        }
+    };
+
+    // ³ö´íÇé¿ö·µ»ØµÇÂ¼Ò³¡£
+    var error_back = function (msg) {
+
+        var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
+        var clientType = "mobile";
+        if (url != "none") {
+
+            if (url.indexOf("ssovie4c55=0") === -1) {
+                url += (((url.indexOf("?") === -1) ? "?" : "&") + "ssovie4c55=0");
+            }
+            if (clientType == "mobile") {
+                window.location.replace("https://passport.weibo.cn/signin/login?r=" + url);
+            } else {
+                window.location.replace("https://weibo.com/login.php");
+            }
+        } else {
+
+            if (document.getElementById("message")) {
+                document.getElementById("message").innerHTML = "Error occurred" + (msg ? (": " + msg) : ".");
+            }
+        }
+    };
+
+    var visitor_gray_callback = function (response) {
+        if (response["retcode"] === 20000000) {
+            var tid = response["data"]["tid"];
+            Store.DB.set('tid', tid);
+
+            var alt = response["data"]["alt"];
+            if (alt !== "") {
+                var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
+                requrl = (url === "none") ? "" : "&url=" + encodeURIComponent(url);
+                var params = "entry=sso&source=visitor_restore&type=3&alt=" + encodeURIComponent(alt) + requrl;
+                window.location.replace("https://passport.weibo.com/sso/v2/login?" + params);
+            } else {
+                cross_domain2(response)
+            }
+        }
+    };
+
+    var isInIframe = function () {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    };
+
+</script>
+</body>
+</html>
