@@ -61,8 +61,8 @@
 
     var visitor_gray = function () {
         var from = "weibo";
-        var return_url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
-        var request_id = "d88a6374f6850719112800223adcf7f0";
+        var return_url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
+        var request_id = "bd72a2fcb6026ce6f33995c02917e02f";
         var webdriver = navigator.webdriver;
 
         // ÏÈÉú³É rid£¬ÔÙ·¢ËÍÇëÇó
@@ -124,7 +124,7 @@
     // Ìø×ª»Ø³õÊ¼µØÖ·¡£
     var back = function () {
 
-        var url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
+        var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
         if (url != "none") {
             window.location.replace(url);
         }
@@ -165,7 +165,7 @@
             if (crossdomain_host != "none") {
 
                 var cross_domain_intr = window.location.protocol + "//" + crossdomain_host + "/visitor/visitor?a=crossdomain&s=" +
-                    encodeURIComponent(response["data"]["sub"]) + "&sp=" + encodeURIComponent(response["data"]["subp"]) + "&from=" + from + "&_rand=" + Math.random() + "&entry=" + entry+"&url=" + encodeURIComponent("https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583");
+                    encodeURIComponent(response["data"]["sub"]) + "&sp=" + encodeURIComponent(response["data"]["subp"]) + "&from=" + from + "&_rand=" + Math.random() + "&entry=" + entry+"&url=" + encodeURIComponent("https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1");
                 window.location.replace(cross_domain_intr);
             } else {
                 back();
@@ -204,7 +204,7 @@
         // Éí·Ý»Ö¸´³É¹¦×ß¹ã²¥Á÷³Ì£¬·ñÔò×ß´´½¨·Ã¿ÍÁ÷³Ì¡£
         if (response["retcode"] == 20000000) {
 
-            var url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
+            var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
             var alt = response["data"]["alt"];
             if (alt != "") {
                 requrl = (url == "none") ? "" : "&url=" + encodeURIComponent(url);
@@ -227,7 +227,7 @@
     // ³ö´íÇé¿ö·µ»ØµÇÂ¼Ò³¡£
     var error_back = function (msg) {
 
-        var url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
+        var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
         var clientType = "mobile";
         if (url != "none") {
 
@@ -254,7 +254,7 @@
 
             var alt = response["data"]["alt"];
             if (alt !== "") {
-                var url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
+                var url = "https://m.weibo.cn/api/container/getIndex?containerid=231648_-_4&extparam=seat%253D1%2526position%253D%25255B%25255D%2526dgr%253D0%2526display_time%253D1650872180%2526pre_seqid%253D16508721809380183149353&luicode=10000011&lfid=231648_-_1";
                 requrl = (url === "none") ? "" : "&url=" + encodeURIComponent(url);
                 var params = "entry=sso&source=visitor_restore&type=3&alt=" + encodeURIComponent(alt) + requrl;
                 window.location.replace("https://passport.weibo.com/sso/v2/login?" + params);
