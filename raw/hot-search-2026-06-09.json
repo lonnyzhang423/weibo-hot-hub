@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-type" content="text/html; charset=gb2312"/>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <title>Sina Visitor System</title>
 </head>
 <body>
@@ -9,7 +9,7 @@
 <script type="text/javascript" src="/js/visitor/mini_original.js?v=20161116"></script>
 <script src="https://passport.sinaimg.cn/js/fp/1.2.1.umd.js"></script>
 <script type="text/javascript">
-    window.use_fp = "0" == "1"; // ÊÇ·ñ²É¼¯Éè±¸Ö¸ÎÆ¡£
+    window.use_fp = "0" == "1"; // æ¯å¦ééè®¾å¤æçº¹ã
     var url = url || {};
     (function () {
         this.l = function (u, c) {
@@ -35,26 +35,26 @@
 
     var visitor_origin = function () {
         try {
-            var need_restore = "0" == "1"; // ÊÇ·ñ×ß»Ö¸´Éí·ÝÁ÷³Ì¡£
+            var need_restore = "0" == "1"; // æ¯å¦èµ°æ¢å¤èº«ä»½æµç¨ã
 
-            // Èç¹ûÐèÒª×ß»Ö¸´Éí·ÝÁ÷³Ì£¬³¢ÊÔ´Ó cookie »ñÈ¡ÓÃ»§Éí·Ý¡£
+            // å¦æéè¦èµ°æ¢å¤èº«ä»½æµç¨ï¼å°è¯ä» cookie è·åç¨æ·èº«ä»½ã
             if (!need_restore || !Store.CookieHelper.get("SRF")) {
 
-                // Èô»ñÈ¡Ê§°Ü×ß´´½¨·Ã¿ÍÁ÷³Ì¡£
-                // Á÷³ÌÖ´ÐÐÊ±¼ä¹ý³¤£¨³¬¹ý 3s£©£¬ÔòÈÏÎª³ö´í¡£
+                // è¥è·åå¤±è´¥èµ°åå»ºè®¿å®¢æµç¨ã
+                // æµç¨æ§è¡æ¶é´è¿é¿ï¼è¶è¿ 3sï¼ï¼åè®¤ä¸ºåºéã
                 var error_timeout = window.setTimeout("error_back()", 5000);
 
                 tid.get(function (tid, where, confidence) {
-                    // È¡Ö¸ÎÆË³ÀûÍê³É£¬Çå³ý³ö´í timeout ¡£
+                    // åæçº¹é¡ºå©å®æï¼æ¸é¤åºé timeout ã
                     window.clearTimeout(error_timeout);
                     incarnate(tid, where, confidence);
                 });
             } else {
-                // ÓÃ»§Éí·Ý´æÔÚ£¬³¢ÊÔ»Ö¸´ÓÃ»§Éí·Ý¡£
+                // ç¨æ·èº«ä»½å­å¨ï¼å°è¯æ¢å¤ç¨æ·èº«ä»½ã
                 restore();
             }
         } catch (e) {
-            // ³ö´í¡£
+            // åºéã
             error_back();
         }
     };
@@ -62,10 +62,10 @@
     var visitor_gray = function () {
         var from = "weibo";
         var return_url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
-        var request_id = "0b47b86e23d22ac86f26c0fdbb8cc3cb";
+        var request_id = "9d8c7e95a921fa008bb6da84b9ab99c4";
         var webdriver = navigator.webdriver;
 
-        // ÏÈÉú³É rid£¬ÔÙ·¢ËÍÇëÇó
+        // åçæ ridï¼ååéè¯·æ±
         generateRid(function(rid) {
             Store.DB.get("tid", function (v) {
                 if (!v) {
@@ -80,7 +80,7 @@
         });
     }
 
-    // Éú³É rid µÄ¶ÀÁ¢·½·¨
+    // çæ rid çç¬ç«æ¹æ³
     var generateRid = function(callback) {
         var rid = Date.now();
         var detector = window.wbBotDetector;
@@ -105,23 +105,23 @@
         }
     };
 
-    // Á÷³ÌÈë¿Ú¡£
+    // æµç¨å¥å£ã
     wload(function () {
         visitor_gray();
     });
 
-    // ¡°·µ»Ø¡± »Øµ÷º¯Êý¡£
+    // âè¿åâ åè°å½æ°ã
     var return_back = function (response) {
 
         if (response["retcode"] == 20000000) {
             back();
         } else {
-            // ³ö´í¡£
+            // åºéã
             error_back(response["msg"]);
         }
     };
 
-    // Ìø×ª»Ø³õÊ¼µØÖ·¡£
+    // è·³è½¬ååå§å°åã
     var back = function () {
 
         var url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
@@ -130,7 +130,7 @@
         }
     };
 
-    // ¿çÓò¹ã²¥¡£
+    // è·¨åå¹¿æ­ã
     var cross_domain = function (response) {
 
         var from = "weibo";
@@ -149,12 +149,12 @@
             }
         } else {
 
-            // ³ö´í¡£
+            // åºéã
             error_back(response["msg"]);
         }
     };
 
-    // ¿çÓò¹ã²¥¡£
+    // è·¨åå¹¿æ­ã
     var cross_domain2 = function (response) {
 
         var from = "weibo";
@@ -172,12 +172,12 @@
             }
         } else {
 
-            // ³ö´í¡£
+            // åºéã
             error_back(response["msg"]);
         }
     };
 
-    // ÎªÓÃ»§¸³Óè·Ã¿ÍÉí·Ý ¡£
+    // ä¸ºç¨æ·èµäºè®¿å®¢èº«ä»½ ã
     var incarnate = function (tid, where, conficence) {
 
         var gen_conf = "";
@@ -188,7 +188,7 @@
         url.l(incarnate_intr);
     };
 
-    // »Ö¸´ÓÃ»§¶ªÊ§µÄÉí·Ý¡£
+    // æ¢å¤ç¨æ·ä¸¢å¤±çèº«ä»½ã
     var restore = function () {
 
         var from = "weibo";
@@ -198,10 +198,10 @@
         url.l(restore_intr);
     };
 
-    // ¿çÓò»Ö¸´¶ªÊ§µÄÉí·Ý¡£
+    // è·¨åæ¢å¤ä¸¢å¤±çèº«ä»½ã
     var restore_back = function (response) {
 
-        // Éí·Ý»Ö¸´³É¹¦×ß¹ã²¥Á÷³Ì£¬·ñÔò×ß´´½¨·Ã¿ÍÁ÷³Ì¡£
+        // èº«ä»½æ¢å¤æåèµ°å¹¿æ­æµç¨ï¼å¦åèµ°åå»ºè®¿å®¢æµç¨ã
         if (response["retcode"] == 20000000) {
 
             var url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
@@ -224,7 +224,7 @@
         }
     };
 
-    // ³ö´íÇé¿ö·µ»ØµÇÂ¼Ò³¡£
+    // åºéæåµè¿åç»å½é¡µã
     var error_back = function (msg) {
 
         var url = "https://m.weibo.cn/api/container/getIndex?containerid=106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot&extparam=filter_type%253Drealtimehot%2526mi_cid%253D100103%2526pos%253D0_0%2526c_type%253D30%2526display_time%253D1550505541&luicode=10000011&lfid=231583";
